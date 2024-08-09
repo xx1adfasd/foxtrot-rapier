@@ -59,19 +59,21 @@ pub(super) fn plugin(app: &mut App) {
         .register_type::<IngameCamera>()
         .register_type::<IngameCameraKind>()
         .init_resource::<ForceCursorGrabMode>()
-        .add_systems(Update, Dolly::<IngameCamera>::update_active)
         .add_systems(Startup, spawn_ui_camera)
-        .add_systems(OnEnter(GameState::Playing), despawn_ui_camera)
-        .add_systems(
-            Update,
-            (
-                grab_cursor,
-                update_kind,
-                update_drivers,
-                set_camera_focus,
-                update_rig,
-            )
-                .chain()
-                .in_set(GameSystemSet::CameraUpdate),
-        );
+        .add_systems(OnEnter(GameState::Playing), despawn_ui_camera);
+
+    //https://github.com/dimforge/bevy_rapier/issues/564
+    app.add_systems(
+        PostUpdate,
+        (
+            grab_cursor,
+            update_kind,
+            update_drivers,
+            set_camera_focus,
+            update_rig,
+            Dolly::<IngameCamera>::update_active,
+        )
+            .chain()
+            .in_set(GameSystemSet::CameraUpdate),
+    );
 }

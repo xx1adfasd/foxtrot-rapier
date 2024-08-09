@@ -13,7 +13,7 @@ use crate::{
 use crate::player_control::actions::ActionsFrozen;
 use bevy::prelude::*;
 use bevy_dolly::prelude::*;
-use bevy_xpbd_3d::prelude::SpatialQuery;
+use bevy_rapier3d::plugin::RapierContext;
 use leafwing_input_manager::prelude::ActionState;
 
 mod arm;
@@ -27,7 +27,7 @@ pub(super) fn update_rig(
         &Transform,
     )>,
     config: Res<GameConfig>,
-    spatial_query: SpatialQuery,
+    rapier_context: Res<RapierContext>,
     actions_frozen: Res<ActionsFrozen>,
 ) {
     let dt = time.delta_seconds();
@@ -49,7 +49,7 @@ pub(super) fn update_rig(
         }
 
         set_desired_distance(&mut camera, actions, &config);
-        let distance = get_arm_distance(&camera, transform, &spatial_query, &config);
+        let distance = get_arm_distance(&camera, transform, &rapier_context, &config);
         if let Some(distance) = distance {
             let zoom_smoothness = get_zoom_smoothness(&config, &camera, &rig, distance);
             set_arm(&mut rig, distance, zoom_smoothness, dt);

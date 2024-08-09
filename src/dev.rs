@@ -3,7 +3,7 @@ use bevy::{
     prelude::*,
 };
 use bevy_editor_pls::prelude::*;
-use bevy_xpbd_3d::prelude::*;
+// use bevy_xpbd_3d::prelude::*;
 
 pub(crate) mod dev_editor;
 
@@ -17,18 +17,18 @@ pub(super) fn plugin(app: &mut App) {
                 FrameTimeDiagnosticsPlugin,
                 dev_editor::plugin,
                 LogDiagnosticsPlugin::filtered(vec![]),
-                PhysicsDebugPlugin::default(),
-            ))
-            .insert_gizmo_group(
-                PhysicsGizmos {
-                    aabb_color: Some(Color::WHITE),
-                    ..default()
-                },
-                GizmoConfig {
-                    enabled: false,
-                    ..default()
-                },
-            );
+                bevy_rapier3d::render::RapierDebugRenderPlugin::default(),
+            ));
+        // .insert_gizmo_group(
+        //     PhysicsGizmos {
+        //         aabb_color: Some(Color::WHITE),
+        //         ..default()
+        //     },
+        //     GizmoConfig {
+        //         enabled: false,
+        //         ..default()
+        //     },
+        // );
     }
 }
 

@@ -4,7 +4,6 @@ use crate::{
 };
 use bevy::{app::AppExit, prelude::*};
 use bevy_egui::{egui, EguiContexts};
-use bevy_xpbd_3d::prelude::*;
 use leafwing_input_manager::prelude::ActionState;
 
 /// Handles the pause menu accessed while playing the game via ESC.
@@ -14,20 +13,22 @@ pub(super) fn plugin(app: &mut App) {
 
 fn handle_pause(
     mut time: ResMut<Time<Virtual>>,
-    mut physics_time: ResMut<Time<Physics>>,
+    mut physics_time: ResMut<crate::physics_time::PhysicsTime>,
     actions: Query<&ActionState<UiAction>>,
     mut app_exit_events: EventWriter<AppExit>,
     mut actions_frozen: ResMut<ActionsFrozen>,
     mut egui_contexts: EguiContexts,
     mut paused: Local<bool>,
 ) {
+    use crate::physics_time::PhysicsTimeExt;
+
     for action in actions.iter() {
         let toggled = action.just_pressed(&UiAction::TogglePause);
         if toggled {
             if *paused {
                 *paused = false;
                 time.unpause();
-                physics_time.unpause();
+                physics_time.resume();
                 actions_frozen.unfreeze();
             } else {
                 *paused = true;

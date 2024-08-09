@@ -1,8 +1,8 @@
 use crate::util::error;
-use crate::{movement::physics::CollisionLayer, GameSystemSet};
+use crate::GameSystemSet;
 use anyhow::Context;
 use bevy::prelude::*;
-use bevy_xpbd_3d::prelude::{Collider as XpbdCollider, *};
+use bevy_rapier3d::prelude::{Collider as RapierCollider, *};
 use oxidized_navigation::NavMeshAffector;
 use serde::{Deserialize, Serialize};
 use std::iter;
@@ -34,21 +34,27 @@ fn spawn(
             };
             // Unwrap cannot fail: we already load all the meshes at startup.
             let mesh = meshes.get(mesh_handle).unwrap();
-            let collider = XpbdCollider::convex_hull_from_mesh(mesh)
-                .context("Failed to create collider from mesh")?;
+            let collider = RapierCollider::from_bevy_mesh(
+                mesh,
+                &bevy_rapier3d::prelude::ComputedColliderShape::TriMesh,
+            )
+            .context("Failed to create collider from mesh")?;
             commands.entity(child).insert((
                 collider,
-                CollisionLayers::new(
-                    [CollisionLayer::Terrain, CollisionLayer::CameraObstacle],
-                    [CollisionLayer::Character],
-                ),
+                // CollisionLayers::new(
+                //     [CollisionLayer::Terrain, CollisionLayer::CameraObstacle],
+                //     [CollisionLayer::Character],
+                // ),
+                CollisionGroups::new(Group::GROUP_3 | Group::GROUP_4, Group::GROUP_2),
+                ActiveEvents::COLLISION_EVENTS,
+                ActiveCollisionTypes::default(),
                 NavMeshAffector,
             ));
         }
         commands
             .entity(parent)
             .remove::<Collider>()
-            .insert(RigidBody::Static);
+            .insert(RigidBody::Fixed);
     }
     Ok(())
 }

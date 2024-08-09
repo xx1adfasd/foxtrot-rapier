@@ -19,8 +19,6 @@ pub(super) fn plugin(app: &mut App) {
             GameSystemSet::UpdateInteractionOpportunities,
             GameSystemSet::Dialog,
             ExampleYarnSpinnerDialogueViewSystemSet,
-            GameSystemSet::CameraUpdate,
-            DollyUpdateSet,
         )
             .chain(),
     )
@@ -34,8 +32,18 @@ pub(super) fn plugin(app: &mut App) {
             GameSystemSet::GeneralMovement,
             GameSystemSet::PlayAnimation,
             GameSystemSet::Dialog,
-            GameSystemSet::CameraUpdate,
         )
+            .run_if(in_state(GameState::Playing)),
+    );
+
+    //https://github.com/dimforge/bevy_rapier/issues/564
+
+    app.configure_sets(
+        PostUpdate,
+        (GameSystemSet::CameraUpdate, DollyUpdateSet)
+            .chain()
+            .after(bevy_rapier3d::plugin::PhysicsSet::Writeback)
+            .before(bevy::transform::TransformSystem::TransformPropagate)
             .run_if(in_state(GameState::Playing)),
     );
 }

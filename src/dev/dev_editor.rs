@@ -8,7 +8,7 @@ use bevy_editor_pls::{
     AddEditorWindow,
 };
 use bevy_egui::egui;
-use bevy_xpbd_3d::prelude::PhysicsGizmos;
+// use bevy_xpbd_3d::prelude::PhysicsGizmos;
 use serde::{Deserialize, Serialize};
 
 pub(super) fn plugin(app: &mut App) {
@@ -54,7 +54,7 @@ pub(crate) struct DevEditorState {
 fn handle_debug_render(
     state: Res<Editor>,
     mut last_enabled: Local<bool>,
-    mut config_store: ResMut<GizmoConfigStore>,
+    // mut config_store: ResMut<GizmoConfigStore>,
 ) -> anyhow::Result<()> {
     let current_enabled = state
         .window_state::<DevEditorWindow>()
@@ -64,8 +64,8 @@ fn handle_debug_render(
         return Ok(());
     }
     *last_enabled = current_enabled;
-    let config = config_store.config_mut::<PhysicsGizmos>().0;
-    config.enabled = current_enabled;
+    // let config = config_store.config_mut::<PhysicsGizmos>().0;
+    // config.enabled = current_enabled;
     Ok(())
 }
 

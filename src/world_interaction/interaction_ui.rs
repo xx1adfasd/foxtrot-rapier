@@ -11,7 +11,7 @@ use crate::{
 };
 use bevy::{prelude::*, window::PrimaryWindow};
 use bevy_egui::{egui, EguiContexts};
-use bevy_xpbd_3d::prelude::*;
+use bevy_rapier3d::prelude::*;
 use bevy_yarnspinner::prelude::DialogueRunner;
 use leafwing_input_manager::prelude::ActionState;
 use serde::{Deserialize, Serialize};
@@ -49,7 +49,7 @@ fn update_interaction_opportunities(
     let player_translation = player_transform.translation();
     let (camera, camera_transform) = single!(camera_query);
 
-    for &sensor in collisions.0.iter() {
+    for sensor in collisions.iter() {
         // A dialog collider is valid for any of its ancestors
         let mut ancestors = iter::once(sensor).chain(parents.iter_ancestors(sensor));
 

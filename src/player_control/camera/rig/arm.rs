@@ -1,21 +1,20 @@
 use crate::{
     file_system_interaction::config::GameConfig,
-    movement::physics::CollisionLayer,
     player_control::camera::{IngameCamera, IngameCameraKind},
 };
 use bevy::prelude::*;
 use bevy_dolly::prelude::*;
-use bevy_xpbd_3d::prelude::*;
+use bevy_rapier3d::prelude::*;
 
 pub(super) fn get_arm_distance(
     camera: &IngameCamera,
     transform: &Transform,
-    spatial_query: &SpatialQuery,
+    rapier_context: &Res<RapierContext>,
     config: &GameConfig,
 ) -> Option<f32> {
     match camera.kind {
         IngameCameraKind::ThirdPerson => Some(get_distance_to_collision(
-            spatial_query,
+            rapier_context,
             config,
             camera,
             transform,
@@ -54,7 +53,7 @@ pub(super) fn set_arm(rig: &mut Rig, distance: f32, zoom_smoothness: f32, dt: f3
 }
 
 fn get_distance_to_collision(
-    spatial_query: &SpatialQuery,
+    rapier_context: &Res<RapierContext>,
     config: &GameConfig,
     camera: &IngameCamera,
     camera_transform: &Transform,
@@ -64,16 +63,20 @@ fn get_distance_to_collision(
 
     let max_toi = camera.desired_distance;
     let solid = true;
-    let filter = SpatialQueryFilter::from_mask(CollisionLayer::CameraObstacle.to_bits());
+    //let filter = SpatialQueryFilter::from_mask(CollisionLayer::CameraObstacle.to_bits());
+
+    let filter = QueryFilter::from(CollisionGroups::new(Group::GROUP_4, Group::GROUP_4));
 
     let min_distance = match camera.kind {
         IngameCameraKind::ThirdPerson => config.camera.third_person.min_distance_to_objects,
         _ => unreachable!(),
     };
 
-    spatial_query
-        .cast_ray(origin, direction, max_toi, solid, filter)
-        .map(|hit| {
+    rapier_context
+        .cast_ray_and_get_normal(origin, *direction, max_toi, solid, filter)
+        .map(|(_entity, hit)| {
+            //https://rapier.rs/docs/user_guides/bevy_plugin/scene_queries#ray-casting
+
             get_distance_such_that_min_distance_from_collision_is_ensured(
                 hit,
                 direction,
@@ -84,7 +87,7 @@ fn get_distance_to_collision(
 }
 
 fn get_distance_such_that_min_distance_from_collision_is_ensured(
-    hit: RayHitData,
+    hit: RayIntersection,
     direction: Direction3d,
     min_distance: f32,
 ) -> f32 {
@@ -103,7 +106,7 @@ fn get_distance_such_that_min_distance_from_collision_is_ensured(
     let adjacent_side = min_distance;
     let angle = direction.angle_between(-hit.normal);
     let hypotenuse = adjacent_side / angle.cos();
-    hit.time_of_impact - hypotenuse
+    hit.toi - hypotenuse
 }
 
 /// Taken from <https://github.com/h3r2tic/dolly/blob/main/src/util.rs#L34>

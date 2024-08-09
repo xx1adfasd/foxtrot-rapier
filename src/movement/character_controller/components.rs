@@ -1,8 +1,8 @@
-use crate::movement::{character_controller::AnimationState, physics::CollisionLayer};
+use crate::movement::character_controller::AnimationState;
 use bevy::prelude::*;
+use bevy_rapier3d::prelude::*;
 use bevy_tnua::{prelude::*, TnuaAnimatingState};
-use bevy_tnua_xpbd3d::*;
-use bevy_xpbd_3d::prelude::*;
+use bevy_tnua_rapier3d::*;
 use serde::{Deserialize, Serialize};
 
 pub(super) fn plugin(app: &mut App) {
@@ -17,38 +17,54 @@ pub(crate) struct CharacterControllerBundle {
     pub(crate) collider: Collider,
     pub(crate) rigid_body: RigidBody,
     pub(crate) locked_axes: LockedAxes,
-    pub(crate) collision_layers: CollisionLayers,
-    pub(crate) tnua_sensor_shape: TnuaXpbd3dSensorShape,
+    pub(crate) collision_layers: CollisionGroups,
+    pub(crate) tnua_sensor_shape: TnuaRapier3dSensorShape,
     pub(crate) tnua_controller: TnuaControllerBundle,
+    pub(crate) tnua_rapier3d_io: TnuaRapier3dIOBundle,
     pub(crate) float_height: FloatHeight,
     pub(crate) animation_state: TnuaAnimatingState<AnimationState>,
+
+    pub(crate) colliding_entities: CollidingEntities,
+    active_collision_types: ActiveCollisionTypes,
+    active_events: ActiveEvents,
+    // mass: ColliderMassProperties,
 }
 
 impl CharacterControllerBundle {
     pub(crate) fn capsule(height: f32, radius: f32, scale_y: f32) -> Self {
+        //Note that the collider is a lying down capsule for the fox,
+        // so in fact the radius *2 is its height,
+        // and the height is its length
         Self {
             walking: default(),
             sprinting: default(),
             jumping: default(),
-            collider: Collider::capsule(height, radius),
+            collider: Collider::capsule_z(height, radius),
             rigid_body: RigidBody::Dynamic,
-            locked_axes: LockedAxes::new().lock_rotation_x().lock_rotation_z(),
-            collision_layers: CollisionLayers::new(
-                [CollisionLayer::Character],
-                [
-                    CollisionLayer::Player,
-                    CollisionLayer::Character,
-                    CollisionLayer::Terrain,
-                    CollisionLayer::Sensor,
-                ],
+            locked_axes: LockedAxes::ROTATION_LOCKED_X | LockedAxes::ROTATION_LOCKED_Z,
+            collision_layers: CollisionGroups::new(
+                Group::GROUP_2,
+                Group::GROUP_1 | Group::GROUP_2 | Group::GROUP_3 | Group::GROUP_5,
+                // [CollisionLayer::Character],
+                // [
+                //     CollisionLayer::Player,
+                //     CollisionLayer::Character,
+                //     CollisionLayer::Terrain,
+                //     CollisionLayer::Sensor,
+                // ],
             ),
-            tnua_sensor_shape: TnuaXpbd3dSensorShape(Collider::capsule(
+            tnua_sensor_shape: TnuaRapier3dSensorShape(Collider::capsule_z(
                 height * 0.95,
                 radius * 0.95,
             )),
             tnua_controller: default(),
-            float_height: FloatHeight((height / 2. + radius) * scale_y),
+            tnua_rapier3d_io: default(),
+            float_height: FloatHeight((radius / 2.) * scale_y),
             animation_state: default(),
+            colliding_entities: default(),
+            active_collision_types: default(),
+            active_events: ActiveEvents::COLLISION_EVENTS,
+            // mass: ColliderMassProperties::Mass(100.),
         }
     }
 }

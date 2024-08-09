@@ -1,10 +1,9 @@
 use crate::{
     level_instantiation::on_spawn::player,
-    movement::{character_controller::CharacterControllerBundle, physics::CollisionLayer},
-    GameState,
+    movement::character_controller::CharacterControllerBundle, GameState,
 };
 use bevy::prelude::*;
-use bevy_xpbd_3d::prelude::*;
+use bevy_rapier3d::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Component, Clone, PartialEq, Default, Reflect, Serialize, Deserialize)]
@@ -29,7 +28,10 @@ fn spawn(follower: Query<(Entity, &Transform), Added<Npc>>, mut commands: Comman
                 parent.spawn((
                     Name::new("NPC Dialog Collider"),
                     Collider::cylinder(player::HEIGHT / 2., player::RADIUS * 5.),
-                    CollisionLayers::new([CollisionLayer::Sensor], [CollisionLayer::Player]),
+                    CollisionGroups::new(Group::GROUP_5, Group::GROUP_1),
+                    // CollisionLayers::new([CollisionLayer::Sensor], [CollisionLayer::Player]),
+                    ActiveEvents::COLLISION_EVENTS,
+                    ActiveCollisionTypes::default(),
                     Sensor,
                 ));
             });
