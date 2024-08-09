@@ -1,6 +1,7 @@
 # Foxtrot
 
-The all-in-one Bevy 3D game template.
+The all-in-one Bevy 3D game template with rapier as the physic engine. The code is up-to-date with the upstream project which uses avian as the physic engine 
+https://github.com/janhohenheim/foxtrot
 
 https://user-images.githubusercontent.com/9047632/226387411-70f662de-0681-47ff-b1d1-ccc59b02fa7b.mov
 
