@@ -88,7 +88,7 @@ fn get_distance_to_collision(
 
 fn get_distance_such_that_min_distance_from_collision_is_ensured(
     hit: RayIntersection,
-    direction: Direction3d,
+    direction: Dir3,
     min_distance: f32,
 ) -> f32 {
     //  Wall
@@ -106,7 +106,7 @@ fn get_distance_such_that_min_distance_from_collision_is_ensured(
     let adjacent_side = min_distance;
     let angle = direction.angle_between(-hit.normal);
     let hypotenuse = adjacent_side / angle.cos();
-    hit.toi - hypotenuse
+    hit.time_of_impact - hypotenuse
 }
 
 /// Taken from <https://github.com/h3r2tic/dolly/blob/main/src/util.rs#L34>

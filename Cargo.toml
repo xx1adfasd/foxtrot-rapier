@@ -22,7 +22,7 @@ dev = [
 tracing = ["bevy/trace_chrome"]
 
 [dependencies.bevy]
-version = "0.13"
+version = "0.14"
 features = [
     "jpeg",
 ]
@@ -30,9 +30,9 @@ features = [
 [dependencies]
 # keep the following in sync with Bevy's dependencies
 ## https://github.com/bevyengine/bevy/blob/v0.13.1/crates/bevy_winit/Cargo.toml#L32
-winit = { version = "0.29", default-features = false }
+winit = { version = "0.30.5", default-features = false }
 ## https://github.com/bevyengine/bevy/blob/v0.13.1/crates/bevy_render/Cargo.toml#L61
-image = { version = "0.24", default-features = false }
+image = { version = "0.25.2", default-features = false }
 ## This greatly improves WGPU's performance due to its heavy use of trace! calls
 log = { version = "0.4", features = ["max_level_debug", "release_max_level_warn"] }
 
@@ -41,26 +41,27 @@ serde = { version = "1", features = ["derive"] }
 anyhow = "1"
 
 # Bevy plugins
-bevy_kira_audio = "0.19"
-bevy_asset_loader = { version = "0.20", features = ["progress_tracking", "standard_dynamic_assets"] }
-bevy_common_assets = { version = "0.10", features = ["ron", "toml"] }
-bevy_egui = "0.25" # version governed by bevy_editor_pls and leafwing-input-manager
-oxidized_navigation = { version = "0.10", features = ["rapier"] }
-iyes_progress = "0.11"
-leafwing-input-manager = { version = "0.13", features = ["egui"] }
-bevy_dolly = "0.0.3"
-bevy_editor_pls = { version = "0.8.1", optional = true }
-bevy_hanabi = { version = "0.11", default-features = false, features = ["3d"] }
-bevy_yarnspinner = "0.2"
-bevy_yarnspinner_example_dialogue_view = "0.2.1"
-bevy-tnua-rapier3d = "0.5"
-bevy_rapier3d = "0.25.0"
+bevy_kira_audio = "0.20"
+bevy_asset_loader = { version = "0.21", features = ["progress_tracking", "standard_dynamic_assets"] }
+bevy_common_assets = { version = "0.11", features = ["ron", "toml"] }
+bevy_egui = "0.28" # version governed by bevy_editor_pls and leafwing-input-manager
+oxidized_navigation = { version = "0.11", features = ["rapier"] }
+iyes_progress = "0.12"
+leafwing-input-manager = { version = "0.14", features = ["egui"] }
+bevy_dolly = "0.0.4"
+# bevy_editor_pls = { version = "0.8.1", optional = true }
+bevy_editor_pls = { git = "https://github.com/zhaop/bevy_editor_pls.git", branch = "bevy-0.14" , optional = true }
+bevy_hanabi = { version = "=0.12.0", default-features = false, features = ["3d"] }
+bevy_yarnspinner = "0.3.1"
+bevy_yarnspinner_example_dialogue_view = "0.3.0"
+bevy-tnua-rapier3d = "0.7"
+bevy_rapier3d = "0.27.0"
 
-bevy-tnua = "0.18"
-bevy_atmosphere = "0.9"
+bevy-tnua = "0.19"
+bevy_atmosphere = "0.10"
 warbler_grass = "0.6"
-bevy_gltf_blueprints = "0.10"
-bevy_registry_export = "0.3"
+bevy_gltf_blueprints = "0.11"
+bevy_registry_export = "0.4.0"
 
 [build-dependencies]
 embed-resource = "2"

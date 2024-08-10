@@ -73,10 +73,10 @@ fn play_animations(
             }
         }) {
             TnuaAnimatingStateDirective::Maintain { state } => {
-                if let AnimationState::Running(speed) = state {
-                    let anim_speed = (speed / 7.0).max(1.0);
-                    animation_player.set_speed(anim_speed);
-                }
+                // if let AnimationState::Running(speed) = state {
+                //     let anim_speed = (speed / 7.0).max(1.0);
+                //     animation_player.set_speed(anim_speed);
+                // }
             }
             TnuaAnimatingStateDirective::Alter {
                 // We don't need the old state here, but it's available for transition
@@ -85,40 +85,40 @@ fn play_animations(
                 state,
             } => match state {
                 AnimationState::Airborne | AnimationState::Running(..) => {
-                    animation_player
-                        .play_with_transition(
-                            animations
-                                .named_animations
-                                .get(&animation_names.aerial)
-                                .unwrap()
-                                .clone_weak(),
-                            Duration::from_secs_f32(0.2),
-                        )
-                        .repeat();
+                    // animation_player
+                    //     .play_with_transition(
+                    //         animations
+                    //             .named_animations
+                    //             .get(&animation_names.aerial)
+                    //             .unwrap()
+                    //             .clone_weak(),
+                    //         Duration::from_secs_f32(0.2),
+                    //     )
+                    //     .repeat();
                 }
                 AnimationState::Standing => {
-                    animation_player
-                        .play_with_transition(
-                            animations
-                                .named_animations
-                                .get(&animation_names.idle)
-                                .unwrap()
-                                .clone_weak(),
-                            Duration::from_secs_f32(0.2),
-                        )
-                        .repeat();
+                    // animation_player
+                    //     .play_with_transition(
+                    //         animations
+                    //             .named_animations
+                    //             .get(&animation_names.idle)
+                    //             .unwrap()
+                    //             .clone_weak(),
+                    //         Duration::from_secs_f32(0.2),
+                    //     )
+                    //     .repeat();
                 }
                 AnimationState::Walking(_speed) => {
-                    animation_player
-                        .play_with_transition(
-                            animations
-                                .named_animations
-                                .get(&animation_names.walk)
-                                .unwrap()
-                                .clone_weak(),
-                            Duration::from_secs_f32(0.1),
-                        )
-                        .repeat();
+                    // animation_player
+                    //     .play_with_transition(
+                    //         animations
+                    //             .named_animations
+                    //             .get(&animation_names.walk)
+                    //             .unwrap()
+                    //             .clone_weak(),
+                    //         Duration::from_secs_f32(0.1),
+                    //     )
+                    //     .repeat();
                 }
             },
         }
